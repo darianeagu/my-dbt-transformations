@@ -1,0 +1,49 @@
+# Basic example of a CI workflow
+
+name: Run and define dbt
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  dbt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dbt
+        run: pip install dbt-snowflake
+
+      - name: Run dbt models
+        run: |
+          dbt run --profiles-dir ./ --project-dir ./
+        env:
+          DBT_USER: ${{ secrets.DBT_USER }}
+          DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
+          DBT_ACCOUNT: ${{ secrets.DBT_ACCOUNT }}
+
+      - name: Tag the release
+        id: tag
+        run: |
+          TAG="dbt-$(date +%Y%m%d%H%M%S)"
+          git tag $TAG
+          git push origin $TAG
+
+
+# Other possible workflow to make the workflow more complex could be
+# writing an automated pipeline to release the docker image, bump the version, build and
+# push the image and updating the relevant yaml file repositories and tag and release
+# on each commit to branch or merge.

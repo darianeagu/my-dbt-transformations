@@ -1,0 +1,20 @@
+# configure all profiles according to each case, this is only an example
+
+dbt-transformations:
+  target: local
+  outputs:
+    local:
+      type: snowflake
+      account: ocado.eu-west-1
+      user: "{{ env_var('DBT_SNOWFLAKE_USER') }}"
+      password: "{{ env_var('DBT_SNOWFLAKE_PASSWORD') }}"
+      role: "{{ env_var('DBT_SNOWFLAKE_ROLE') }}"
+      warehouse: OCADO_WAREHOUSE
+      database: LOCAL #replace with actual correct database, schema, warehouse according to business case
+      schema: ROBOT_EVENTS
+      threads: 10
+      client_session_keep_alive: False
+    dev:
+#configure dev similarly
+    prod:
+#configure prod similarly

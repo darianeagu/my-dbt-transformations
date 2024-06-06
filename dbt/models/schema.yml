@@ -1,0 +1,90 @@
+
+# write out all the models, only 2 examples given below
+# apply tests to relevant columns
+
+models:
+  - name: sorting_states
+    description: 'a row for each state change from a machine'
+    columns:
+      - name: meta_orb_site
+        description: 'name of the machine location'
+      - name: meta_machine_name
+        description: 'name of the machine'
+      - name: meta_event_time
+        description: 'timestamp at which the event was ingested (not suitable for
+      accurate time calculations, useful for partitioning)'
+      - name: meta_deploy_mode
+        description: 'whether the machine was deployed in a production environment'
+      - name: meta_received_time
+        description: 'the timestamp on when the data landed in our platform'
+      - name: phase_group_id
+        description: 'random id, unique'
+      - name: start_time
+        description: 'timestamp of when this state started'
+      - name: end_time
+        description: 'timestamp of when this state ended'
+      - name: state
+        description: 'state reported in the time range. Can have the values of sorting, blocked, scheduled_downtime, unscheduled_downtime, off_hours.'
+        tests:
+        - dbt_expectations.expect_column_values_to_be_of_type:
+            column_type:
+        - accepted_values:
+            values:
+
+  - name: hourly_sorting_aggregate
+    description: 'one row per orb site'
+    columns:
+      - name: orb_site
+        description: 'name of the machine location'
+      - name: machine_name
+        description: 'name of the machine'
+      - name: deploy_mode
+        description: 'whether the machine was deployed in a production environment'
+      - name: start_time
+        description: 'start time of this time slice'
+      - name: end_time
+        description: 'end time of this time slice'
+      - name: local_start_time
+        description: 'start time of this time slice, in the time zone where the machine is located'
+      - name: local_end_time
+        description: ' end time of this time slice, in the time zone where the machine is located'
+      - name: units_unloaded
+        description: 'total number of units unloaded'
+      - name: all_sort_attempts
+        description: 'number of all sorting attempts the machine made (successful or not)'
+      - name: all_complete_sort_attempts
+        description: 'number of successful sorting attempts'
+      - name: operating_seconds
+        description: 'number of seconds in which the machine was operating across all states that are not downtime'
+      - name: sorting_seconds
+        description: 'number of seconds in which the machine was in sorting'
+      - name: blocked_seconds
+        description: 'number of seconds in which the machine was blocked'
+
+#define the rest of the models
+
+  - name: sort_attempts
+    description: 'a row for each sorting attempt'
+    columns:
+      - name:
+        description: ''
+
+  - name: unloads
+    description: 'a table containing a row for each unload event'
+    columns:
+      - name:
+        description: ''
+
+  - name: unload_items
+    description: 'a table containing a row for each item unloaded in an unload'
+    columns:
+      - name:
+        description: ''
+
+  - name: orb_site_info
+    description: 'one row per orb site'
+    columns:
+      - name:
+        description: ''
+
+

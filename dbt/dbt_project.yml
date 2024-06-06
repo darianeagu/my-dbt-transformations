@@ -1,0 +1,23 @@
+# Define the dbt_project completely, configure profiles, etc
+
+name: 'my-dbt'
+version: '1.0.0'
+config-version: 2
+profile: 'dbt-transformations'
+# these configurations specify where dbt should look for different types of files.
+model-paths: ["models"]
+clean-targets: # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+# define all cases, in this case I have only covered Gold
+# assuming the databases follow the medallion structure
+models:
+  dbt-transformations:
+    Gold:
+      +database: |
+        {%- if target.name == "prod" -%} GOLD
+        {%- elif target.name == "dev" -%} GOLD_DEV
+        {%- else -%} LOCAL
+        {%- endif -%}
+      +schema: ROBOT_EVENTS
